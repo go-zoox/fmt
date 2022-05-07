@@ -1,16 +1,16 @@
-# PubSub - lightweight pub/sub messaging
+# Fmt - Pretty Data Display, Inlcude JSON/YAML/TOML/INI ...
 
-[![PkgGoDev](https://pkg.go.dev/badge/github.com/go-zoox/pubsub)](https://pkg.go.dev/github.com/go-zoox/pubsub)
-[![Build Status](https://github.com/go-zoox/pubsub/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/go-zoox/pubsub/actions/workflows/ci.yml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/go-zoox/pubsub)](https://goreportcard.com/report/github.com/go-zoox/pubsub)
-[![Coverage Status](https://coveralls.io/repos/github/go-zoox/pubsub/badge.svg?branch=master)](https://coveralls.io/github/go-zoox/pubsub?branch=master)
-[![GitHub issues](https://img.shields.io/github/issues/go-zoox/pubsub.svg)](https://github.com/go-zoox/pubsub/issues)
-[![Release](https://img.shields.io/github/tag/go-zoox/pubsub.svg?label=Release)](https://github.com/go-zoox/pubsub/tags)
+[![PkgGoDev](https://pkg.go.dev/badge/github.com/go-zoox/fmt)](https://pkg.go.dev/github.com/go-zoox/fmt)
+[![Build Status](https://github.com/go-zoox/fmt/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/go-zoox/fmt/actions/workflows/ci.yml)
+[![Go Report Card](https://goreportcard.com/badge/github.com/go-zoox/fmt)](https://goreportcard.com/report/github.com/go-zoox/fmt)
+[![Coverage Status](https://coveralls.io/repos/github/go-zoox/fmt/badge.svg?branch=master)](https://coveralls.io/github/go-zoox/fmt?branch=master)
+[![GitHub issues](https://img.shields.io/github/issues/go-zoox/fmt.svg)](https://github.com/go-zoox/fmt/issues)
+[![Release](https://img.shields.io/github/tag/go-zoox/fmt.svg?label=Release)](https://github.com/go-zoox/fmt/tags)
 
 ## Installation
 To install the package, run:
 ```bash
-go get github.com/go-zoox/pubsub
+go get github.com/go-zoox/fmt
 ```
 
 ## Getting Started
@@ -18,30 +18,43 @@ go get github.com/go-zoox/pubsub
 ```go
 import (
   "testing"
-  "github.com/go-zoox/pubsub"
+  "github.com/go-zoox/fmt"
 )
 
 func main(t *testing.T) {
-	e := pubsub.New()
-	count := 0
-	e.On("send.notify", pubsub.HandleFunc(func(payload any) {
-		count++
-		t.Log("send.notify", payload)
-	}))
-
-	e.Start()
-
-	wg := &sync.WaitGroup{}
-	for i := 0; i < 10; i++ {
-		index := i
-		wg.Add(1)
-		go func() {
-			e.Emit("send.notify", index)
-			wg.Done()
-		}()
+		type User struct {
+		Name    string
+		Age     int
+		Address struct {
+			City   string
+			Street string
+		}
+		Hobbies []string
 	}
 
-	wg.Wait()
+	user := User{
+		Name: "Zero",
+		Age:  18,
+		Address: struct {
+			City   string
+			Street string
+		}{
+			City:   "Shanghai",
+			Street: "Nanjingxi Road Street",
+		},
+		Hobbies: []string{"sport", "music", "movies"},
+	}
+
+	fmt.Println("JSON Format:")
+	fmt.PrintJSON(user)
+	fmt.Println("\nYAML Format:")
+	fmt.PrintYAML(user)
+	fmt.Println("\nTOML Format:")
+	fmt.PrintTOML(user)
+	// Println("\nINI Format:")
+	// PrintINI(user)
+	fmt.Println("\nRaw Format:")
+	fmt.Println(user)
 }
 ```
 
